@@ -51,8 +51,8 @@ jobs:
 
       - name: Commit and push preprocessed dataset
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "Kartika Sari"
+          git config --global user.email "kartikuy@users.noreply.github.com"
 
           git add preprocessing/preprocessed_Bank_Customer_Churn_Prediction.csv
           git commit -m "Auto-update preprocessed dataset [skip ci]" || echo "No changes to commit"

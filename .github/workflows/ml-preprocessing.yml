@@ -1,0 +1,59 @@
+name: ML Preprocessing Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  
+  pull_request:
+    branches:
+      - main
+  
+  workflow_dispatch:
+    inputs:
+      run_preprocessing:
+        description: 'Ppreprocessing pipeline'
+        required: true
+        default: 'true'
+        type: boolean
+
+env:
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  preprocessing:
+    name: Data Preprocessing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install pandas numpy matplotlib seaborn scikit-learn
+          fi
+
+      - name: Run preprocessing script
+        run: |
+          cd preprocessing
+          echo "Running Preprocessing Script"
+          python "automate_Kartika-Sari.py"
+
+      - name: Commit and push preprocessed dataset
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add preprocessing/preprocessed_Bank_Customer_Churn_Prediction.csv
+          git commit -m "Auto-update preprocessed dataset [skip ci]" || echo "No changes to commit"
+          git push
